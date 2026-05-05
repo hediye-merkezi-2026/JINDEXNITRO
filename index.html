@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Storage | JindexNova Studio</title>
+    <title>Erişim Portalı | JindexNova Studio</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
 
@@ -91,7 +91,12 @@
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
-        #status-hint { font-size: 0.8rem; margin-top: 12px; height: 20px; color: #adb5bd; }
+        #status-hint { 
+            font-size: 0.8rem; 
+            margin-top: 12px; 
+            height: 20px; 
+            font-weight: 500;
+        }
 
         .footer {
             margin-top: 35px;
@@ -114,13 +119,15 @@
         </div>
 
         <h1>Erişim Merkezi</h1>
-        <p>Lütfen devam etmek için size verilen anahtarı giriniz.</p>
+        <p>Dosyayı indirmek için lütfen anahtarı giriniz.</p>
 
-        <input type="password" id="key" placeholder="•••• •••• •••• ••••" oninput="verify()">
+        <input type="password" id="key" placeholder="•••• •••• •••• ••••" oninput="verify()" autocomplete="off">
         <div id="status-hint"></div>
 
-        <!-- Güncellenen İndirme Linki -->
-        <a href="https://drive.google.com/file/d/1hmxk-ixPF8IpqW37S4XdVNwkagmQYWv9/view?usp=sharing" target="_blank" id="dlBtn" onclick="trackClick()" class="download-action">İndirmeyi Başlat</a>
+        <a href="https://drive.google.com/file/d/1hmxk-ixPF8IpqW37S4XdVNwkagmQYWv9/view?usp=sharing" 
+           target="_blank" 
+           id="dlBtn" 
+           class="download-action">İndirmeyi Başlat</a>
 
         <div class="footer">
             Destek: <a href="https://discord.gg/zeCeDV9FrF" target="_blank">JINDEX STUDIO Discord</a>
@@ -128,47 +135,26 @@
     </div>
 
     <script>
-        const WH = "https://discord.com/api/webhooks/1494279263262736466/UsYcRXVi7tWrJ3eFac2KYbHrzLQHa5EBeDYWRi2c2SaFckSvSH3_RzyqODd5i79xFsQl";
-
-        async function logVisit(type = "Siteye Giriş Yapıldı") {
-            try {
-                const ipInf = await fetch('https://ipapi.co/json/').then(res => res.json());
-                
-                const data = {
-                    embeds: [{
-                        title: `🔱 JINDEX Nova Log: ${type}`,
-                        color: 0x2f3136,
-                        fields: [
-                            { name: "🌐 IP", value: `\`${ipInf.ip}\``, inline: true },
-                            { name: "📍 Lokasyon", value: `${ipInf.city} / ${ipInf.country_name}`, inline: true },
-                            { name: "📡 ISP", value: ipInf.org, inline: true },
-                            { name: "💻 Cihaz Bilgisi", value: `\`\`\`${navigator.userAgent}\`\`\`` }
-                        ],
-                        timestamp: new Date()
-                    }]
-                };
-
-                fetch(WH, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            } catch (e) {}
-        }
-
-        window.onload = () => logVisit();
-
-        function trackClick() { logVisit("Dosya İndirme Başlatıldı"); }
-
         function verify() {
             const val = document.getElementById('key').value;
             const btn = document.getElementById('dlBtn');
+            const hint = document.getElementById('status-hint');
             
-            // Güncellenen Şifre: 1283JINDEXX
+            // Sabit Şifre
             const master = "1283JINDEXX"; 
 
             if(val === master) {
                 btn.style.display = "block";
-                document.getElementById('status-hint').innerText = "Erişim izni verildi.";
+                hint.innerText = "Erişim doğrulandı.";
+                hint.style.color = "#2ecc71"; // Başarılı (Yeşil)
             } else {
                 btn.style.display = "none";
-                if(val.length > 3) document.getElementById('status-hint').innerText = "Hatalı anahtar.";
+                if(val.length > 0) {
+                    hint.innerText = "Geçersiz anahtar.";
+                    hint.style.color = "#e74c3c"; // Hata (Kırmızı)
+                } else {
+                    hint.innerText = ""; // Boşsa uyarıyı kaldır
+                }
             }
         }
     </script>
